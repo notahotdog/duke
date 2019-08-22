@@ -8,7 +8,7 @@ public class Duke {
                 + "| |_| | |_| |   <  __/\n"
                 + "|____/ \\__,_|_|\\_\\___|\n";
         System.out.println("Hello from\n" + logo);
-        System.out.println("What can i do for you?");
+        System.out.println("What can i do for you? ");
         Boolean state = true;
 
         List<Task> actionList = new ArrayList<>();
