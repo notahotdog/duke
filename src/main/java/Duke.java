@@ -1,7 +1,14 @@
+import java.io.BufferedReader;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.text.ParseException;
 import java.util.*;
+import java.io.*;
+import java.nio.channels.ScatteringByteChannel;
+import java.util.StringTokenizer;
 
 public class Duke {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws DukeException,IOException, ParseException {
         String logo = " ____        _        \n"
                 + "|  _ \\ _   _| | _____ \n"
                 + "| | | | | | | |/ / _ \\\n"
@@ -13,7 +20,71 @@ public class Duke {
 
         List<Task> actionList = new ArrayList<>(); //List of actions to be taken
 
+        //Level 7
+        //Reading in the input from a previous session
+
+        FileReader fileReader = new FileReader("src/data/duke.txt");
+        BufferedReader br = new BufferedReader(fileReader);
+        String str1;
+        while((str1 = br.readLine()) != null){
+            String delims = "[|]";
+            String[] tokens = str1.split(delims);
+
+            //tokens
+            if(tokens[0].equals("T")){
+                //-- tasks[counter] = new Todo(tokens[2]);
+
+                //Create Tasks
+                ToDo action = new ToDo(tokens[2],"T");
+                if(tokens[1].equals("true")){ //replaced from true
+                    action.isDone = true;
+                }
+                //add to actionList
+                actionList.add(action);
+
+                //--counter++;
+            }
+            //Deadlines
+            else if(tokens[0].equals("D")){
+
+                //--tasks[counter] = new Deadline(tokens[2], tokens[3]);
+
+                Deadline action = new Deadline(tokens[2],"D",tokens[3]);
+
+                if(tokens[1].equals("true"))
+                {
+                    action.isDone = true;
+                    //tasks[counter].isDone = true;
+                }
+
+                actionList.add(action);
+                //--counter++;
+            }
+            //Events
+            else if(tokens[0].equals("E")){
+
+                Event action = new Event(tokens[2],"E", tokens[3]);
+                //--tasks[counter] = new Event(tokens[2], tokens[3]);
+                if(tokens[1].equals("true")){
+                    action.isDone = true;
+                    //--tasks[counter].isDone = true;
+                }
+                //--counter++;
+                actionList.add(action);
+
+            }
+        }
+        br.close();
+
+
+
         while(state) {
+
+            //FileWriter/ PrintWriter
+            FileWriter fileWriter = new FileWriter("src/data/duke.txt", true);
+            PrintWriter printWriter = new PrintWriter(fileWriter);
+
+
 
             Scanner sc = new Scanner(System.in);
             String str = sc.nextLine();
@@ -76,8 +147,6 @@ public class Duke {
 
                 } else if (firstWord.equals("todo")) {
 
-
-
                     if(restWord == null){
                         //Handle Errors
                         System.out.println("      ☹   OOPS!!! The description of a todo cannot be empty.");
@@ -91,6 +160,15 @@ public class Duke {
                     //System.out.println("[T][x]"  + restWord);
                     System.out.println("\t" + action);
                     System.out.println("Now you have " + actionList.size() + " tasks in the list.");
+
+
+                    try {
+                        printWriter.println("T|" + action.isDone + "|" + action.description);
+                    } catch (Exception e) {
+                        System.out.println("exception caught");
+                        e.printStackTrace();
+                    }
+
 
                 } else if (firstWord.equals("deadline")) {
 
@@ -108,6 +186,13 @@ public class Duke {
                     System.out.println("\t" + addtoList);
                     System.out.println("Now you have " + actionList.size() + " tasks in the list.");
 
+                    try {
+                        printWriter.println("D|" + addtoList.isDone + "|" + addtoList.description + "|" + addtoList.dueDate);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
                 } else if (firstWord.equals("event")) {
 
                     System.out.println("Got it. I've added this task: ");
@@ -123,8 +208,14 @@ public class Duke {
                     System.out.println("\t" + addtoList);
                     System.out.println("Now you have " + actionList.size() + " tasks in the list.");
 
-                }
+                    try {
+                        printWriter.println("E|" + addtoList.isDone + "|"+ addtoList.description+"|"+ addtoList.dueDate);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
+
+                }
 
                     else {
                         //Exception Handling level 5
@@ -136,10 +227,53 @@ public class Duke {
             catch (Exception e){
                 System.out.println("☹ OOPS!!! I'm sorry, but I don't know what that means :-(");
             }
-
-
+                printWriter.close();
+                fileWriter.close();
 
         }
+
+
+        // Update the .txt file at the end of the session
+
+        FileReader fileReader1 = new FileReader("src/data/duke.txt");
+        BufferedReader bufferedReader1 = new BufferedReader(fileReader1);
+        StringBuilder inputBuffer = new StringBuilder();
+        String str2;
+
+        int counter = actionList.size();
+        Iterator<Task> actionItr = actionList.iterator();
+
+        //iterate through the actionList file
+        while((str2 = bufferedReader1.readLine()) != null && counter != 0) {
+
+            //Checks the action
+            Task element = actionItr.next();
+            boolean check = element.isDone;
+
+            String delims = "[|]";
+            String[] tokens1 = str2.split(delims);
+
+            if (check) {
+                tokens1[1] = "true";
+            }
+            StringBuilder line1 = new StringBuilder();
+            for (int i = 0; i < tokens1.length; i++) {
+                line1.append(tokens1[i]);
+                if (i != tokens1.length - 1) {
+                    line1.append("|");
+                }
+            }
+            inputBuffer.append(line1);
+            inputBuffer.append('\n');
+
+        }
+
+        fileReader1.close();
+
+        FileOutputStream fileOut = new FileOutputStream("src/data/duke.txt");
+        fileOut.write(inputBuffer.toString().getBytes());
+        fileOut.close();
+
     }
 
 
