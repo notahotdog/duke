@@ -79,9 +79,11 @@ public class Duke {
 
 
                     if(restWord == null){
+                        //Handle Errors
                         System.out.println("      ☹   OOPS!!! The description of a todo cannot be empty.");
                         continue;
                     }
+
                     System.out.println("Got it. I've added this task: ");
                     ToDo action = new ToDo((restWord), "T");
                     actionList.add(action);
@@ -123,8 +125,11 @@ public class Duke {
 
                 }
 
+
                     else {
-                        System.out.println("     ☹ OOPS!!! I'm sorry, but I don't know what that means :-(");
+                        //Exception Handling level 5
+                        DukeException error  = new DukeException("     ☹ OOPS!!! I'm sorry, but I don't know what that means :-(");
+                        System.out.println(error.getMessage());
                     }
 
             }
