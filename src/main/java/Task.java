@@ -5,8 +5,6 @@ public class Task {
     public String actiontype;
 
     //Include the tags for TODO's Deadlines and Events
-    //extend Class
-
 
     public Task(String description, String type) {
         this.description = description;

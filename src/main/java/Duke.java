@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.io.*;
 import java.nio.channels.ScatteringByteChannel;
@@ -19,6 +20,14 @@ public class Duke {
         Boolean state = true;
 
         List<Task> actionList = new ArrayList<>(); //List of actions to be taken
+
+       //Level 8 - Date Formatting
+        SimpleDateFormat formatter_st = new SimpleDateFormat("dd 'st' 'of' MMMMMMMMMMMM yyyy, h:mm a");
+        SimpleDateFormat formatter_nd = new SimpleDateFormat("dd 'nd' 'of' MMMMMMMMMMMM yyyy, h:mm a");
+        SimpleDateFormat formatter_rd = new SimpleDateFormat("dd 'rd' 'of' MMMMMMMMMMMM yyyy, h:mm a");
+        SimpleDateFormat formatter_th = new SimpleDateFormat("dd 'th' 'of' MMMMMMMMMMMM yyyy, h:mm a");
+
+
 
         //Level 7
         //Reading in the input from a previous session
@@ -179,6 +188,55 @@ public class Duke {
                     String action = command[0]; //action to be undertaken
                     String dueDate = command[1]; //date to be completed
 
+                    //System.out.println("duedate" + dueDate);
+                    //System.out.println("before dueDate formatting" + dueDate);
+
+                    // changing the by if it is a date
+
+                    if(dueDate.contains("/") && Character.isDigit(dueDate.charAt(1)))
+                    {
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HHmm");
+                        Date date = formatter.parse(dueDate);
+
+                        //System.out.println("Date Debug" + date);
+
+
+                        String tempFormat ="";
+                        if(dueDate.charAt(2) == '1' || (dueDate.charAt(1) == '1' && dueDate.charAt(2) =='/'))
+                        {
+                            if(dueDate.charAt(0) == '1' && dueDate.charAt(1) == '1') {
+                                tempFormat = formatter_th.format(date);
+                            }
+                            else
+                            {
+                                tempFormat = formatter_st.format(date);
+                            }
+                        }
+                        else if (dueDate.charAt(2) == '2' || (dueDate.charAt(1) == '2' && dueDate.charAt(2) =='/'))
+                        {
+                            if(dueDate.charAt(1)== '1' && dueDate.charAt(2) == '2') {
+                                tempFormat = formatter_th.format(date);
+                            }
+                            else
+                            {
+                                tempFormat = formatter_nd.format(date);
+                            }
+                        }
+                        else if (dueDate.charAt(2) == '3' || (dueDate.charAt(1) == '3' && dueDate.charAt(2) =='/')) {
+                            if (dueDate.charAt(1) == '1' && dueDate.charAt(2) == '3') {
+                                tempFormat = formatter_th.format(date);
+                            } else {
+                                tempFormat = formatter_rd.format(date);
+                            }
+                        }
+                        else
+                        {
+                            tempFormat = formatter_th.format(date);
+                        }
+                        dueDate = tempFormat;
+                        //System.out.println("Updated formatting for Due Date" + dueDate);
+                    }
+
 
                     Deadline addtoList = new Deadline(action, "D", dueDate);
                     actionList.add(addtoList);
@@ -201,6 +259,51 @@ public class Duke {
                     String command[] = restWord.split("/at", 2);
                     String action = command[0]; //action to be undertaken
                     String dueDate = command[1]; // date to be completed
+
+
+                    if(dueDate.contains("/") && Character.isDigit(dueDate.charAt(1)))
+                    {
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HHmm");
+                        Date date = formatter.parse(dueDate);
+
+                        //System.out.println("Date Debug" + date);
+
+
+                        String tempFormat ="";
+                        if(dueDate.charAt(2) == '1' || (dueDate.charAt(1) == '1' && dueDate.charAt(2) =='/'))
+                        {
+                            if(dueDate.charAt(0) == '1' && dueDate.charAt(1) == '1') {
+                                tempFormat = formatter_th.format(date);
+                            }
+                            else
+                            {
+                                tempFormat = formatter_st.format(date);
+                            }
+                        }
+                        else if (dueDate.charAt(2) == '2' || (dueDate.charAt(1) == '2' && dueDate.charAt(2) =='/'))
+                        {
+                            if(dueDate.charAt(1)== '1' && dueDate.charAt(2) == '2') {
+                                tempFormat = formatter_th.format(date);
+                            }
+                            else
+                            {
+                                tempFormat = formatter_nd.format(date);
+                            }
+                        }
+                        else if (dueDate.charAt(2) == '3' || (dueDate.charAt(1) == '3' && dueDate.charAt(2) =='/')) {
+                            if (dueDate.charAt(1) == '1' && dueDate.charAt(2) == '3') {
+                                tempFormat = formatter_th.format(date);
+                            } else {
+                                tempFormat = formatter_rd.format(date);
+                            }
+                        }
+                        else
+                        {
+                            tempFormat = formatter_th.format(date);
+                        }
+                        dueDate = tempFormat;
+                        //System.out.println("Updated formatting for Due Date" + dueDate);
+                    }
 
                     Event addtoList = new Event(action, "E", dueDate);
                     actionList.add(addtoList);
