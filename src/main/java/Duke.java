@@ -11,20 +11,47 @@ public class Duke {
         System.out.println("What can i do for you? ");
         Boolean state = true;
 
-        List<Task> actionList = new ArrayList<>();
+        List<Task> actionList = new ArrayList<>(); //List of actions to be taken
+
         while(state) {
 
             Scanner sc = new Scanner(System.in);
             String str = sc.nextLine();
 
-            boolean removeList = str.contains("done");
+            /*
+                boolean removeList = str.contains("done");
+                boolean todoList = str.contains("todo");
+            */
 
-            if(str.equals("bye")){
+
+            String firstWord = null;
+            String restWord = null;
+
+            int noWords = countWordsUsingStringTokenizer(str);
+
+
+            //check the first word if it is todo/deadline/event than add
+            if(noWords != 1) {
+                String inpSentence[] = str.split(" ", 2);
+                firstWord = inpSentence[0];
+                restWord = inpSentence[1];
+            }
+            else{
+                firstWord = str;
+            }
+
+
+
+            //System.out.println("FWord: " + firstWord);
+            //System.out.println("RWord: " + restWord);
+
+            if(firstWord.equals("bye")){ //replace
                 System.out.println("Bye. Hope to see you again soon!");
                 state=false;
             }
 
-            else if(removeList){
+            //mark as done
+            else if(firstWord.equals("done")){
                 System.out.println("Nice! I've marked this task as done:");
                 String arrStr[]  = str.split(" ", 2);
 
@@ -38,7 +65,7 @@ public class Duke {
             }
 
 
-            else if(str.equals("list")){
+            else if(firstWord.equals("list")){
                 System.out.println("Here are the tasks in your list:");
 
                 //Implementation using the task class
@@ -48,20 +75,81 @@ public class Duke {
                     Task element = actionItr.next();
                     String action = element.getDescription();
                     String check = element.getStatusIcon();
+                    String actionType = element.getActiontype();
 
-                    System.out.println(ctr +". [" + check +"]" + action);
+                    System.out.println(ctr +". [" +actionType + "]" + "[" + check +"]" + action);
                     ctr++;
                 }
 
+            }
+
+            else if(firstWord.equals("todo")){
+
+                System.out.println("Got it. I've added this task: ");
+
+                ToDo action = new ToDo((restWord),"T");
+                actionList.add(action);
+
+                //System.out.println("[T][x]"  + restWord);
+                System.out.println("\t" + action);
+                System.out.println("Now you have " +  actionList.size() + " tasks in the list.");
 
             }
-            else {
+            else if(firstWord.equals("deadline")){
 
+                System.out.println("Got it. I've added this task: ");
+
+                //separate the word
+                    String command[] = restWord.split("/by", 2);
+                    String action = command[0]; //action to be undertaken
+                    String dueDate = command[1]; //date to be completed
+
+
+                Deadline addtoList = new Deadline(action,"D", dueDate);
+                actionList.add(addtoList);
+
+                System.out.println("\t" + addtoList);
+                System.out.println("Now you have " +  actionList.size() + " tasks in the list.");
+
+            }
+            else if(firstWord.equals("event")){
+
+                System.out.println("Got it. I've added this task: ");
+
+                //Separate the word
+                    String command[] = restWord.split("/at", 2);
+                    String action = command[0]; //action to be undertaken
+                    String dueDate = command[1]; // date to be completed
+
+                Event addtoList = new Event(action ,"E", dueDate);
+                actionList.add(addtoList);
+
+                System.out.println("\t" + addtoList);
+                System.out.println("Now you have " +  actionList.size() + " tasks in the list.");
+
+            }
+
+
+
+
+            else {
+                /*
                 Task action = new Task(str);
                 actionList.add(action);
                 System.out.println("added: "+ str);
+                */
+
             }
         }
+    }
+
+
+    public static int countWordsUsingStringTokenizer(String sentence) {
+        if (sentence == null || sentence.isEmpty()) {
+            return 0;
+        }
+        StringTokenizer tokens = new StringTokenizer(sentence);
+        return tokens.countTokens();
     }
 }
 
