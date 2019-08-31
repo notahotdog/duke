@@ -97,11 +97,26 @@ public class Duke {
                     System.out.println("Bye. Hope to see you again soon!");
                     state = false;
 
-                } else if (firstWord.equals("delete")) {
+                }else if(firstWord.equals("find")){
 
+                    //Level 9-Find
+                     Iterator<Task> itr = actionList.iterator();
+                     List<Task> printList = new ArrayList<>();
+                     while(itr.hasNext()){
+                         Task element = itr.next();
+                         String elementDscr = element.description;
+                         if(elementDscr.contains(restWord)){
+                             printList.add(element);
+                         }
+                     }
+                    System.out.println("Here are the matching tasks in your list:");
+                     printTaskList(printList);
 
-                    //Level 6 - Delete
+                }
 
+                else if (firstWord.equals("delete")) {
+
+                    //Level 6- Delete
                     System.out.println("Noted. I've removed this task:  ");
                     String arrStr[] = str.split(" ", 2);
 
@@ -116,8 +131,7 @@ public class Duke {
 
                 }
 
-
-                //mark as done
+                //DONE
                 else if (firstWord.equals("done")) {
                     System.out.println("Nice! I've marked this task as done:");
                     String arrStr[] = str.split(" ", 2);
@@ -278,6 +292,18 @@ public class Duke {
             return false;
         }
     }
+
+
+    public static void printTaskList(List<Task> arrayList){
+
+        for(Task element: arrayList){
+            System.out.println(element);
+        }
+
+    }
+
+
+
 
 
     //Level 8 - Date Formatting
