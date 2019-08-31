@@ -91,20 +91,44 @@ public class Duke {
 
 
             try {
-                if (firstWord.equals("bye")) { //replace
+
+
+                if (firstWord.equals("bye")) {
                     System.out.println("Bye. Hope to see you again soon!");
                     state = false;
 
+                } else if (firstWord.equals("delete")) {
+
+
+                    //Level 6 - Delete
+
+                    System.out.println("Noted. I've removed this task:  ");
+                    String arrStr[] = str.split(" ", 2);
+
+                    int num = Integer.parseInt(arrStr[1]) - 1;
+                    actionList.remove(num);
+                    System.out.println("Now you have " + actionList.size() + " tasks in the list.");
+
+
+                    //Delete from Memory
+                    int lineNo = Integer.parseInt(arrStr[1]);
+                    deleteLine(lineNo);
+
                 }
+
 
                 //mark as done
                 else if (firstWord.equals("done")) {
                     System.out.println("Nice! I've marked this task as done:");
                     String arrStr[] = str.split(" ", 2);
 
-                    //this will change the icon to false
+                    //this will change the icon to true
                     int num = Integer.parseInt(arrStr[1]) - 1;
                     actionList.get(num).isDone = true;
+
+                    //Updates the state of the line
+                    int lineNo = Integer.parseInt(arrStr[1]);
+                    updateStateDone(lineNo);
 
                     String action = actionList.get(num).getDescription();
                     String check = actionList.get(num).getStatusIcon();
@@ -235,49 +259,6 @@ public class Duke {
 
         }
 
-
-
-        // Update the .txt file at the end of the session
-
-        FileReader fileReader1 = new FileReader("src/data/duke.txt");
-        BufferedReader bufferedReader1 = new BufferedReader(fileReader1);
-        StringBuilder inputBuffer = new StringBuilder();
-        String str2;
-
-        int counter = actionList.size();
-        Iterator<Task> actionItr = actionList.iterator();
-
-        //iterate through the actionList file
-        while ((str2 = bufferedReader1.readLine()) != null && counter != 0) {
-
-            //Checks the action
-            Task element = actionItr.next();
-            boolean check = element.isDone;
-
-            String delims = "[|]";
-            String[] tokens1 = str2.split(delims);
-
-            if (check) {
-                tokens1[1] = "true";
-            }
-            StringBuilder line1 = new StringBuilder();
-            for (int i = 0; i < tokens1.length; i++) {
-                line1.append(tokens1[i]);
-                if (i != tokens1.length - 1) {
-                    line1.append("|");
-                }
-            }
-            inputBuffer.append(line1);
-            inputBuffer.append('\n');
-
-        }
-
-        fileReader1.close();
-
-        FileOutputStream fileOut = new FileOutputStream("src/data/duke.txt");
-        fileOut.write(inputBuffer.toString().getBytes());
-        fileOut.close();
-
     }
 
 
@@ -339,6 +320,77 @@ public class Duke {
             return tempFormat;
         }
         return dueDate;
+    }
+
+    public static void updateStateDone (int lineNo) throws IOException {
+        //System.out.println("UPDATING state");
+        FileReader fileReaderUpdate = new FileReader("src/data/duke.txt");
+        BufferedReader bufferedReaderUpdate = new BufferedReader(fileReaderUpdate);
+        StringBuilder inputBuffer = new StringBuilder();
+        String tmpStr;
+
+        int ctr = 0;
+        while ((tmpStr = bufferedReaderUpdate.readLine()) != null) {
+
+
+            StringBuilder line1 = new StringBuilder();
+
+            ctr++;
+            if (lineNo == ctr) { //change the values in a line
+                String delims = "[|]";
+                String[] tokens1 = tmpStr.split(delims);
+                tokens1[1] = "true";
+                for (int i = 0; i < tokens1.length; i++) {
+                    line1.append(tokens1[i]);
+                    if (i != tokens1.length - 1) {
+                        line1.append("|");
+                    }
+                }
+            }
+            else{
+                line1.append(tmpStr);
+            }
+
+            inputBuffer.append(line1);
+            inputBuffer.append('\n');
+
+        }
+
+        fileReaderUpdate.close();
+        FileOutputStream fileOut = new FileOutputStream("src/data/duke.txt");
+        fileOut.write(inputBuffer.toString().getBytes());
+        fileOut.close();
+
+    }
+
+
+
+    public static void deleteLine(int lineNo) throws IOException {
+
+        //System.out.println("UPDATING Delete");
+        FileReader fileReaderDelete = new FileReader("src/data/duke.txt");
+        BufferedReader bufferedReaderDelete = new BufferedReader(fileReaderDelete);
+        StringBuilder inputBuffer = new StringBuilder();
+        String tmpStr;
+
+        int ctr = 0;
+        while ((tmpStr = bufferedReaderDelete.readLine()) != null) {
+
+            ctr++;
+            if(lineNo == ctr) continue; // ignores the line
+
+          //  System.out.println("Line No: " + lineNo + " Ctr val:" + ctr);
+           // System.out.println("DELETE DEBUG: " + tmpStr);
+            inputBuffer.append(tmpStr);
+            inputBuffer.append('\n');
+
+        }
+
+        fileReaderDelete.close();
+        FileOutputStream fileOut = new FileOutputStream("src/data/duke.txt");
+        fileOut.write(inputBuffer.toString().getBytes());
+        fileOut.close();
+
     }
 }
 
