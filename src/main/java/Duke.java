@@ -9,7 +9,7 @@ import java.nio.channels.ScatteringByteChannel;
 import java.util.StringTokenizer;
 
 public class Duke {
-    public static void main(String[] args) throws DukeException,IOException, ParseException {
+    public static void main(String[] args) throws DukeException, IOException, ParseException {
         String logo = " ____        _        \n"
                 + "|  _ \\ _   _| | _____ \n"
                 + "| | | | | | | |/ / _ \\\n"
@@ -21,13 +21,6 @@ public class Duke {
 
         List<Task> actionList = new ArrayList<>(); //List of actions to be taken
 
-       //Level 8 - Date Formatting
-        SimpleDateFormat formatter_st = new SimpleDateFormat("dd 'st' 'of' MMMMMMMMMMMM yyyy, h:mm a");
-        SimpleDateFormat formatter_nd = new SimpleDateFormat("dd 'nd' 'of' MMMMMMMMMMMM yyyy, h:mm a");
-        SimpleDateFormat formatter_rd = new SimpleDateFormat("dd 'rd' 'of' MMMMMMMMMMMM yyyy, h:mm a");
-        SimpleDateFormat formatter_th = new SimpleDateFormat("dd 'th' 'of' MMMMMMMMMMMM yyyy, h:mm a");
-
-
 
         //Level 7
         //Reading in the input from a previous session
@@ -35,65 +28,50 @@ public class Duke {
         FileReader fileReader = new FileReader("src/data/duke.txt");
         BufferedReader br = new BufferedReader(fileReader);
         String str1;
-        while((str1 = br.readLine()) != null){
+        while ((str1 = br.readLine()) != null) {
             String delims = "[|]";
             String[] tokens = str1.split(delims);
 
             //tokens
-            if(tokens[0].equals("T")){
-                //-- tasks[counter] = new Todo(tokens[2]);
+            if (tokens[0].equals("T")) {
 
                 //Create Tasks
-                ToDo action = new ToDo(tokens[2],"T");
-                if(tokens[1].equals("true")){ //replaced from true
+                ToDo action = new ToDo(tokens[2], actionType.T);
+                if (tokens[1].equals("true")) { //replaced from true
                     action.isDone = true;
                 }
-                //add to actionList
-                actionList.add(action);
 
-                //--counter++;
+                actionList.add(action);
             }
+
             //Deadlines
-            else if(tokens[0].equals("D")){
+            else if (tokens[0].equals("D")) {
 
-                //--tasks[counter] = new Deadline(tokens[2], tokens[3]);
-
-                Deadline action = new Deadline(tokens[2],"D",tokens[3]);
-
-                if(tokens[1].equals("true"))
-                {
+                Deadline action = new Deadline(tokens[2], actionType.D, tokens[3]);
+                if (tokens[1].equals("true")) {
                     action.isDone = true;
-                    //tasks[counter].isDone = true;
                 }
-
                 actionList.add(action);
-                //--counter++;
             }
+
             //Events
-            else if(tokens[0].equals("E")){
+            else if (tokens[0].equals("E")) {
 
-                Event action = new Event(tokens[2],"E", tokens[3]);
-                //--tasks[counter] = new Event(tokens[2], tokens[3]);
-                if(tokens[1].equals("true")){
+                Event action = new Event(tokens[2], actionType.E, tokens[3]);
+                if (tokens[1].equals("true")) {
                     action.isDone = true;
-                    //--tasks[counter].isDone = true;
                 }
-                //--counter++;
                 actionList.add(action);
-
             }
         }
         br.close();
 
 
+        while (state) {
 
-        while(state) {
-
-            //FileWriter/ PrintWriter
+            //FileWriter/PrintWriter
             FileWriter fileWriter = new FileWriter("src/data/duke.txt", true);
             PrintWriter printWriter = new PrintWriter(fileWriter);
-
-
 
             Scanner sc = new Scanner(System.in);
             String str = sc.nextLine();
@@ -103,19 +81,14 @@ public class Duke {
 
             int noWords = countWordsUsingStringTokenizer(str);
             //check the first word if it is todo/deadline/event than add
-            if(noWords != 1) {
+            if (noWords != 1) {
                 String inpSentence[] = str.split(" ", 2);
                 firstWord = inpSentence[0];
                 restWord = inpSentence[1];
-            }
-            else{
+            } else {
                 firstWord = str;
             }
 
-
-
-            //System.out.println("FWord: " + firstWord);
-            //System.out.println("RWord: " + restWord);
 
             try {
                 if (firstWord.equals("bye")) { //replace
@@ -143,30 +116,41 @@ public class Duke {
                     //Implementation using the task class
                     Iterator<Task> actionItr = actionList.iterator();
                     int ctr = 1;
+
                     while (actionItr.hasNext()) {
+
                         Task element = actionItr.next();
                         String action = element.getDescription();
                         String check = element.getStatusIcon();
                         String actionType = element.getActiontype();
 
-                        System.out.println(ctr + ". [" + actionType + "]" + "[" + check + "]" + action);
+                        String dueDate = element.getDueDate();
+
+                        if (element instanceof ToDo) {
+                            System.out.println(ctr + ". [" + actionType + "]" + "[" + check + "]" + action);
+                        } else if (element instanceof Deadline) {
+                            System.out.println(ctr + ". [" + actionType + "]" + "[" + check + "]" + action + "(by:" + dueDate + ")");
+                        } else if (element instanceof Event) {
+                            System.out.println(ctr + ". [" + actionType + "]" + "[" + check + "]" + action + "(at:" + dueDate + ")");
+                        }
+
                         ctr++;
 
                     }
 
                 } else if (firstWord.equals("todo")) {
 
-                    if(restWord == null){
+                    if (restWord == null) {
                         //Handle Errors
                         System.out.println("      ☹   OOPS!!! The description of a todo cannot be empty.");
                         continue;
                     }
 
                     System.out.println("Got it. I've added this task: ");
-                    ToDo action = new ToDo((restWord), "T");
+
+                    ToDo action = new ToDo((restWord), actionType.T);
                     actionList.add(action);
 
-                    //System.out.println("[T][x]"  + restWord);
                     System.out.println("\t" + action);
                     System.out.println("Now you have " + actionList.size() + " tasks in the list.");
 
@@ -188,64 +172,21 @@ public class Duke {
                     String action = command[0]; //action to be undertaken
                     String dueDate = command[1]; //date to be completed
 
-                    //System.out.println("duedate" + dueDate);
-                    //System.out.println("before dueDate formatting" + dueDate);
 
-                    // changing the by if it is a date
+                    //conversion from string to date format
+                    String temp = convertToDateFormat(dueDate);
+                    dueDate = temp;
 
-                    if(dueDate.contains("/") && Character.isDigit(dueDate.charAt(1)))
-                    {
-                        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HHmm");
-                        Date date = formatter.parse(dueDate);
-
-                        //System.out.println("Date Debug" + date);
-
-
-                        String tempFormat ="";
-                        if(dueDate.charAt(2) == '1' || (dueDate.charAt(1) == '1' && dueDate.charAt(2) =='/'))
-                        {
-                            if(dueDate.charAt(0) == '1' && dueDate.charAt(1) == '1') {
-                                tempFormat = formatter_th.format(date);
-                            }
-                            else
-                            {
-                                tempFormat = formatter_st.format(date);
-                            }
-                        }
-                        else if (dueDate.charAt(2) == '2' || (dueDate.charAt(1) == '2' && dueDate.charAt(2) =='/'))
-                        {
-                            if(dueDate.charAt(1)== '1' && dueDate.charAt(2) == '2') {
-                                tempFormat = formatter_th.format(date);
-                            }
-                            else
-                            {
-                                tempFormat = formatter_nd.format(date);
-                            }
-                        }
-                        else if (dueDate.charAt(2) == '3' || (dueDate.charAt(1) == '3' && dueDate.charAt(2) =='/')) {
-                            if (dueDate.charAt(1) == '1' && dueDate.charAt(2) == '3') {
-                                tempFormat = formatter_th.format(date);
-                            } else {
-                                tempFormat = formatter_rd.format(date);
-                            }
-                        }
-                        else
-                        {
-                            tempFormat = formatter_th.format(date);
-                        }
-                        dueDate = tempFormat;
-                        //System.out.println("Updated formatting for Due Date" + dueDate);
-                    }
-
-
-                    Deadline addtoList = new Deadline(action, "D", dueDate);
+                    Deadline addtoList = new Deadline(action, actionType.D, dueDate);
                     actionList.add(addtoList);
 
                     System.out.println("\t" + addtoList);
                     System.out.println("Now you have " + actionList.size() + " tasks in the list.");
 
                     try {
+
                         printWriter.println("D|" + addtoList.isDone + "|" + addtoList.description + "|" + addtoList.dueDate);
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -260,80 +201,40 @@ public class Duke {
                     String action = command[0]; //action to be undertaken
                     String dueDate = command[1]; // date to be completed
 
+                    //conversion from string to date format
+                    String temp = convertToDateFormat(dueDate);
+                    dueDate = temp;
 
-                    if(dueDate.contains("/") && Character.isDigit(dueDate.charAt(1)))
-                    {
-                        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HHmm");
-                        Date date = formatter.parse(dueDate);
-
-                        //System.out.println("Date Debug" + date);
+                    //enum
+                    Event addtoList = new Event(action, actionType.E, dueDate);
 
 
-                        String tempFormat ="";
-                        if(dueDate.charAt(2) == '1' || (dueDate.charAt(1) == '1' && dueDate.charAt(2) =='/'))
-                        {
-                            if(dueDate.charAt(0) == '1' && dueDate.charAt(1) == '1') {
-                                tempFormat = formatter_th.format(date);
-                            }
-                            else
-                            {
-                                tempFormat = formatter_st.format(date);
-                            }
-                        }
-                        else if (dueDate.charAt(2) == '2' || (dueDate.charAt(1) == '2' && dueDate.charAt(2) =='/'))
-                        {
-                            if(dueDate.charAt(1)== '1' && dueDate.charAt(2) == '2') {
-                                tempFormat = formatter_th.format(date);
-                            }
-                            else
-                            {
-                                tempFormat = formatter_nd.format(date);
-                            }
-                        }
-                        else if (dueDate.charAt(2) == '3' || (dueDate.charAt(1) == '3' && dueDate.charAt(2) =='/')) {
-                            if (dueDate.charAt(1) == '1' && dueDate.charAt(2) == '3') {
-                                tempFormat = formatter_th.format(date);
-                            } else {
-                                tempFormat = formatter_rd.format(date);
-                            }
-                        }
-                        else
-                        {
-                            tempFormat = formatter_th.format(date);
-                        }
-                        dueDate = tempFormat;
-                        //System.out.println("Updated formatting for Due Date" + dueDate);
-                    }
-
-                    Event addtoList = new Event(action, "E", dueDate);
                     actionList.add(addtoList);
 
                     System.out.println("\t" + addtoList);
                     System.out.println("Now you have " + actionList.size() + " tasks in the list.");
 
                     try {
-                        printWriter.println("E|" + addtoList.isDone + "|"+ addtoList.description+"|"+ addtoList.dueDate);
+                        printWriter.println("E|" + addtoList.isDone + "|" + addtoList.description + "|" + addtoList.dueDate);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
 
 
+                } else {
+                    //Exception Handling level 5
+                    DukeException error = new DukeException("     ☹ OOPS!!! I'm sorry, but I don't know what that means :-(");
+                    System.out.println(error.getMessage());
                 }
 
-                    else {
-                        //Exception Handling level 5
-                        DukeException error  = new DukeException("     ☹ OOPS!!! I'm sorry, but I don't know what that means :-(");
-                        System.out.println(error.getMessage());
-                    }
-
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 System.out.println("☹ OOPS!!! I'm sorry, but I don't know what that means :-(");
             }
-                printWriter.close();
-                fileWriter.close();
+            printWriter.close();
+            fileWriter.close();
 
         }
+
 
 
         // Update the .txt file at the end of the session
@@ -347,7 +248,7 @@ public class Duke {
         Iterator<Task> actionItr = actionList.iterator();
 
         //iterate through the actionList file
-        while((str2 = bufferedReader1.readLine()) != null && counter != 0) {
+        while ((str2 = bufferedReader1.readLine()) != null && counter != 0) {
 
             //Checks the action
             Task element = actionItr.next();
@@ -398,5 +299,46 @@ public class Duke {
     }
 
 
+    //Level 8 - Date Formatting
+    public static String convertToDateFormat(String dueDate) throws ParseException {
+
+        SimpleDateFormat formatter_st = new SimpleDateFormat("dd 'st' 'of' MMMMMMMMMMMM yyyy, h:mm a");
+        SimpleDateFormat formatter_nd = new SimpleDateFormat("dd 'nd' 'of' MMMMMMMMMMMM yyyy, h:mm a");
+        SimpleDateFormat formatter_rd = new SimpleDateFormat("dd 'rd' 'of' MMMMMMMMMMMM yyyy, h:mm a");
+        SimpleDateFormat formatter_th = new SimpleDateFormat("dd 'th' 'of' MMMMMMMMMMMM yyyy, h:mm a");
+
+
+        if (dueDate.contains("/") && Character.isDigit(dueDate.charAt(1))) {
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HHmm");
+
+            Date date = formatter.parse(dueDate);
+
+            String tempFormat = "";
+            if (dueDate.charAt(2) == '1' || (dueDate.charAt(1) == '1' && dueDate.charAt(2) == '/')) {
+                if (dueDate.charAt(0) == '1' && dueDate.charAt(1) == '1') {
+                    tempFormat = formatter_th.format(date);
+                } else {
+                    tempFormat = formatter_st.format(date);
+                }
+            } else if (dueDate.charAt(2) == '2' || (dueDate.charAt(1) == '2' && dueDate.charAt(2) == '/')) {
+                if (dueDate.charAt(1) == '1' && dueDate.charAt(2) == '2') {
+                    tempFormat = formatter_th.format(date);
+                } else {
+                    tempFormat = formatter_nd.format(date);
+                }
+            } else if (dueDate.charAt(2) == '3' || (dueDate.charAt(1) == '3' && dueDate.charAt(2) == '/')) {
+                if (dueDate.charAt(1) == '1' && dueDate.charAt(2) == '3') {
+                    tempFormat = formatter_th.format(date);
+                } else {
+                    tempFormat = formatter_rd.format(date);
+                }
+            } else {
+                tempFormat = formatter_th.format(date);
+            }
+
+            return tempFormat;
+        }
+        return dueDate;
+    }
 }
 

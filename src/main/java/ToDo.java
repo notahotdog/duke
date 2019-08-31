@@ -1,6 +1,6 @@
 public class ToDo  extends Task{
 
-    public ToDo(String description, String type){
+    public ToDo(String description, actionType type){
         super(description,type);
     }
 

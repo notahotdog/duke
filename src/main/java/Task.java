@@ -2,14 +2,16 @@ public class Task {
 
     protected String description;
     protected boolean isDone;
-    public String actiontype;
+    public String dueDate = null;
+    public actionType type;
 
     //Include the tags for TODO's Deadlines and Events
 
-    public Task(String description, String type) {
+    public Task(String description, actionType type) {
         this.description = description;
         this.isDone = false;
-        this.actiontype = type;
+        this.type = type;
+
     }
 
 
@@ -22,7 +24,11 @@ public class Task {
     }
 
     public String getActiontype(){
-        return actiontype;
+        return type.name(); // converts enum to string
+    }
+
+    public String getDueDate() {
+        return dueDate;
     }
 
     @Override

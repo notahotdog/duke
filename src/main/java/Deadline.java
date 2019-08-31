@@ -1,10 +1,6 @@
 public class Deadline extends Task {
-    String command;
-    String action;
-    String dueDate;
 
-
-    public Deadline(String description, String type, String dueDate){
+    public Deadline(String description, actionType type, String dueDate){
         super(description, type);
         this.dueDate = dueDate;
 
