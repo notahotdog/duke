@@ -11,18 +11,124 @@ import java.util.StringTokenizer;
 //Commit
 
 public class Duke {
+
+    private Storage storage;
+    private TaskList tasks;
+    private Ui ui;
+    private Parser parser;
+
+    public Duke(String filePath) {
+        ui = new Ui();
+        storage = new Storage(filePath);
+        parser = new Parser();
+
+        try {
+            tasks = new TaskList(storage.load());
+
+        } catch (IOException e) {
+            ui.showLoadingError();
+            tasks = new TaskList();
+        }
+    }
+
+    public void run() throws IOException, ParseException {
+
+        boolean state = true;
+        while (state) {
+
+            /*
+            //FileWriter/PrintWriter
+            FileWriter fileWriter = new FileWriter("src/data/duke.txt", true);
+            PrintWriter printWriter = new PrintWriter(fileWriter);
+            printWriter.close();
+            fileWriter.close();
+             */
+            parser.inputString(); //Takes in an input
+            String firstWord = parser.firstWord;
+            String restWord = parser.restWord;
+            String inputSentence = parser.wholeSentence;
+
+
+            try {
+
+                if (firstWord.equals("bye")) {
+                    System.out.println("Bye. Hope to see you again soon!");
+                    state = false;
+
+                } else if (firstWord.equals("find")) {
+
+                    //Level 9-Find
+                    ui.findWord(tasks, restWord);// find the word inside taskList and Prints
+
+                } else if (firstWord.equals("delete")) {
+
+                    //Level 6-Delete
+                    ui.deleteLine(tasks, restWord); //delete from the arrayList
+
+                    //Delete from Memory
+                    int lineNo = Integer.parseInt(restWord);
+                    storage.deleteLine(lineNo);
+
+                } else if (firstWord.equals("done")) {
+
+                    ui.markAsDone(tasks, restWord); //mark as done in taskList
+                    //Updates the state of the line
+                    int lineNo = Integer.parseInt(restWord);
+                    storage.updateStateDone(lineNo);
+
+
+                } else if (firstWord.equals("list")) {
+                    ui.showList(tasks);
+                } else if (firstWord.equals("todo")) {
+
+                    if (restWord == null) {
+                        //Handle Errors
+                        System.out.println("      ☹   OOPS!!! The description of a todo cannot be empty.");
+                        continue;
+                    }
+                    //print
+                    ui.newTodo(tasks, restWord);
+                    storage.newToDo(restWord);
+
+                } else if (firstWord.equals("deadline")) {
+
+                    ui.newDeadline(tasks, inputSentence, storage);
+
+                } else if (firstWord.equals("event")) {
+
+                    ui.newEvent(tasks, inputSentence, storage);
+
+                } else {
+                    //Exception Handling level 5
+                    DukeException error = new DukeException("     ☹ OOPS!!! I'm sorry, but I don't know what that means :-(");
+                    System.out.println(error.getMessage());
+                }
+
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+    }
+    public static void main(String[] args) throws IOException, ParseException {
+        new Duke("data/tasks.txt").run();
+    }
+
+
+
+/*
     public static void main(String[] args) throws DukeException, IOException, ParseException {
-        String logo = " ____        _        \n"
-                + "|  _ \\ _   _| | _____ \n"
-                + "| | | | | | | |/ / _ \\\n"
-                + "| |_| | |_| |   <  __/\n"
-                + "|____/ \\__,_|_|\\_\\___|\n";
-        System.out.println("Hello from\n" + logo);
-        System.out.println("What can i do for you? ");
+
         Boolean state = true;
-
         List<Task> actionList = new ArrayList<>(); //List of actions to be taken
+*/
 
+/*
 
         //Level 7
         //Reading in the input from a previous session
@@ -67,14 +173,11 @@ public class Duke {
             }
         }
         br.close();
-
-
+*/
+/*
         while (state) {
 
-            //FileWriter/PrintWriter
-            FileWriter fileWriter = new FileWriter("src/data/duke.txt", true);
-            PrintWriter printWriter = new PrintWriter(fileWriter);
-
+            /*
             Scanner sc = new Scanner(System.in);
             String str = sc.nextLine();
 
@@ -91,9 +194,13 @@ public class Duke {
                 firstWord = str;
             }
 
+             */
 
+            /*
+            //FileWriter/PrintWriter
+            FileWriter fileWriter = new FileWriter("src/data/duke.txt", true);
+            PrintWriter printWriter = new PrintWriter(fileWriter);
             try {
-
 
                 if (firstWord.equals("bye")) {
                     System.out.println("Bye. Hope to see you again soon!");
@@ -273,9 +380,11 @@ public class Duke {
             printWriter.close();
             fileWriter.close();
 
+
         }
 
     }
+*/
 
 
     public static int countWordsUsingStringTokenizer(String sentence) {
@@ -286,6 +395,7 @@ public class Duke {
         return tokens.countTokens();
     }
 
+    /*
     public static boolean isInteger(String str) {
         try {
             Integer.parseInt(str);
@@ -294,17 +404,7 @@ public class Duke {
             return false;
         }
     }
-
-
-    public static void printTaskList(List<Task> arrayList){
-
-        for(Task element: arrayList){
-            System.out.println(element);
-        }
-
-    }
-
-
+     */
 
 
 
@@ -350,6 +450,8 @@ public class Duke {
         return dueDate;
     }
 
+
+    /*
     public static void updateStateDone (int lineNo) throws IOException {
         //System.out.println("UPDATING state");
         FileReader fileReaderUpdate = new FileReader("src/data/duke.txt");
@@ -392,7 +494,9 @@ public class Duke {
     }
 
 
+     */
 
+    /*
     public static void deleteLine(int lineNo) throws IOException {
 
         //System.out.println("UPDATING Delete");
@@ -420,5 +524,6 @@ public class Duke {
         fileOut.close();
 
     }
+     */
 }
 
