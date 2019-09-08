@@ -7,5 +7,4 @@ Hello from
 
 What can i do for you? 
 Here are the tasks in your list:
-1. [T][✘]return book
 Bye. Hope to see you again soon!

@@ -17,7 +17,6 @@ public class Storage {
         List<Task> actionList = new ArrayList<>(); //List of actions to be taken
 
         //Level 7
-        //Level 7
         //Reading in the input from a previous session
         FileReader fileReader = new FileReader("src/data/duke.txt");
         BufferedReader br = new BufferedReader(fileReader);
@@ -35,7 +34,6 @@ public class Storage {
                     action.isDone = true;
                 }
 
-                //
                 actionList.add(action);
             }
 
@@ -76,7 +74,6 @@ public class Storage {
         StringBuilder inputBuffer = new StringBuilder();
         String tmpStr;
 
-
         int ctr = 0;
         while ((tmpStr = bufferedReaderUpdate.readLine()) != null) {
             StringBuilder line1 = new StringBuilder();
@@ -107,13 +104,11 @@ public class Storage {
         fileOut.write(inputBuffer.toString().getBytes());
         fileOut.close();
 
-
     }
 
 
     public void deleteLine(int lineNo) throws IOException {
 
-        //System.out.println("UPDATING Delete");
         FileReader fileReaderDelete = new FileReader("src/data/duke.txt");
         BufferedReader bufferedReaderDelete = new BufferedReader(fileReaderDelete);
         StringBuilder inputBuffer = new StringBuilder();
@@ -125,8 +120,6 @@ public class Storage {
             ctr++;
             if(lineNo == ctr) continue; // ignores the line
 
-            //  System.out.println("Line No: " + lineNo + " Ctr val:" + ctr);
-            // System.out.println("DELETE DEBUG: " + tmpStr);
             inputBuffer.append(tmpStr);
             inputBuffer.append('\n');
 
@@ -142,8 +135,6 @@ public class Storage {
 
 
     public static void newToDo(String restWord) throws IOException {
-      //  FileWriter fileWriter = new FileWriter("src/data/duke.txt", true);
-        //PrintWriter printWriter = new PrintWriter(fileWriter);
         try {
             FileWriter fileWriter = new FileWriter("src/data/duke.txt", true);
             PrintWriter printWriter = new PrintWriter(fileWriter);

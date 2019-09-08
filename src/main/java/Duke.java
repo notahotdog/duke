@@ -7,9 +7,6 @@ import java.util.*;
 import java.io.*;
 import java.util.StringTokenizer;
 
-//typinginthiscommentcause intellij wont let me push otherwise
-
-//Commit
 
 public class Duke {
 
@@ -37,18 +34,10 @@ public class Duke {
         boolean state = true;
         while (state) {
 
-            /*
-            //FileWriter/PrintWriter
-            FileWriter fileWriter = new FileWriter("src/data/duke.txt", true);
-            PrintWriter printWriter = new PrintWriter(fileWriter);
-            printWriter.close();
-            fileWriter.close();
-             */
             parser.inputString(); //Takes in an input
             String firstWord = parser.firstWord;
             String restWord = parser.restWord;
             String inputSentence = parser.wholeSentence;
-
 
             try {
 
@@ -396,18 +385,6 @@ public class Duke {
         return tokens.countTokens();
     }
 
-    /*
-    public static boolean isInteger(String str) {
-        try {
-            Integer.parseInt(str);
-            return true;
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-    }
-     */
-
-
 
     //Level 8 - Date Formatting
     public static String convertToDateFormat(String dueDate) throws ParseException {
@@ -528,3 +505,11 @@ public class Duke {
      */
 }
 
+  /*
+            //FileWriter/PrintWriter
+            FileWriter fileWriter = new FileWriter("src/data/duke.txt", true);
+            PrintWriter printWriter = new PrintWriter(fileWriter);
+            printWriter.close();
+            fileWriter.close();
+
+*/

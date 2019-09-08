@@ -18,14 +18,6 @@ public class TaskList {
         taskList = new ArrayList<>();
     }
 
-    /*
-    public TaskList(void load) {
-        System.out.println("buggy lol");;
-    }
-    */
-
-
-
     public Iterator getIterator(){
         return taskList.iterator();
     }

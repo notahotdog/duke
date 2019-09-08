@@ -88,7 +88,7 @@ public class Ui {
         System.out.println("Now you have " + tasks.taskList.size() + " tasks in the list.");
 
         //handle storage
-
+        storage.newEvent(addtoList);//forget to include inside
 
     }
 
@@ -101,7 +101,6 @@ public class Ui {
 
         //Implementation using the task class
         Iterator<Task> actionItr = tasks.taskList.iterator();
-        //Iterator<Task> actionItr = tasks.getIterator();
         int ctr = 1;
         while (actionItr.hasNext()) {
             Task element = actionItr.next();
@@ -135,21 +134,11 @@ public class Ui {
 
     void markAsDone(TaskList tasks, String pos){
         System.out.println("Nice! I've marked this task as done:");
-       // String arrStr[] = str.split(" ", 2);
 
         //this will change the icon to true
         int num = Integer.parseInt(pos)-1;//arrStr[1]) - 1;
-        //actionList.get(num).isDone = true;
         tasks.taskList.get(num).isDone = true;
 
-        //Updates the state of the line
-        //int lineNo = Integer.parseInt(arrStr[1]);
-        //int lineNo = Integer.parseInt(str);
-        //Duke.updateStateDone(lineNo);
-        //update to storage
-
-        //String action = actionList.get(num).getDescription();
-        //String check = actionList.get(num).getStatusIcon();
         String action = tasks.taskList.get(num). getDescription();
         String check = tasks.taskList.get(num). getStatusIcon();
         System.out.println("  [" + check + "]" + action);
