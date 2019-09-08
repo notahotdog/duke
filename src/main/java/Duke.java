@@ -105,6 +105,7 @@ public class Duke {
 
         }
     }
+
     public static void main(String[] args) throws IOException, ParseException {
         new Duke("data/tasks.txt").run();
     }
@@ -159,4 +160,4 @@ public class Duke {
         }
         return dueDate;
     }
-
+}
