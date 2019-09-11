@@ -12,6 +12,12 @@ public class Storage {
 
 
     //Loads data from the previous session
+
+    /**
+     * Loads a previous team
+     * @return
+     * @throws IOException
+     */
     public List<Task> load() throws IOException {
 
         List<Task> actionList = new ArrayList<>(); //List of actions to be taken
