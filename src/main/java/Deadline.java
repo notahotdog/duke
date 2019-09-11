@@ -1,6 +1,12 @@
 public class Deadline extends Task {
 
-    public Deadline(String description, actionType type, String dueDate){
+    /**
+     * Creates a new Deadline
+     * @param description Description of the task
+     * @param type type of task
+     * @param dueDate when the task is due
+     */
+    Deadline(String description, actionType type, String dueDate){
         super(description, type);
         this.dueDate = dueDate;
 

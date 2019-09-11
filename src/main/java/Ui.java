@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Ui {
+class Ui {
 
 
-    public Ui(){
+    /**
+     * Default Constructor for UI, prints out initial message
+     */
+    Ui(){
         String logo = " ____        _        \n"
                 + "|  _ \\ _   _| | _____ \n"
                 + "| | | | | | | |/ / _ \\\n"
@@ -20,14 +23,21 @@ public class Ui {
     }
 
 
+    /**
+     *  Show Loading Error
+     */
     void showLoadingError(){
         System.out.println("     ☹   OOPS!!! There was an error loading your list. ");
 
     }
 
 
+    /**
+     * Creates a new ToDo task
+     * @param tasks task
+     * @param restWord Details of the todo task
+     */
     void newTodo(TaskList tasks, String restWord){
-
 
         System.out.println("Got it. I've added this task: ");
 
@@ -41,11 +51,18 @@ public class Ui {
     }
 
 
+    /**
+     * Creates a new Deadline task
+     * @param tasks task
+     * @param inpSentence the details of the Deadline
+     * @param storage the storage location of the Deadline
+     * @throws ParseException if the strings not in a particular format
+     */
     void newDeadline(TaskList tasks, String inpSentence, Storage storage) throws ParseException {
 
         System.out.println("Got it. I've added this task: ");
         //separate the word
-        String command[] = inpSentence.split("/by", 2);
+        String[] command = inpSentence.split("/by", 2);
         String action = command[0]; //action to be undertaken
         String dueDate = command[1]; //date to be completed
 
@@ -63,14 +80,19 @@ public class Ui {
         storage.newDeadline(addtoList);// saves in file
     }
 
+    /**
+     * Creates a new Event task
+     * @param tasks task
+     * @param inpSentence the details of the Event
+     * @param storage the storage location of the Event
+     * @throws ParseException if the strings not in a particular format
+     */
     void  newEvent(TaskList tasks, String inpSentence, Storage storage) throws ParseException {
-
-
 
         System.out.println("Got it. I've added this task: ");
 
         //Separate the word
-        String command[] = inpSentence.split("/at", 2);
+        String[] command = inpSentence.split("/at", 2);
         String action = command[0]; //action to be undertaken
         String dueDate = command[1]; // date to be completed
 
@@ -80,7 +102,6 @@ public class Ui {
 
         //enum
         Event addtoList = new Event(action, actionType.E, dueDate);
-
 
         tasks.taskList.add(addtoList);
 
@@ -93,8 +114,10 @@ public class Ui {
     }
 
 
-
-
+    /**
+     * Prints out the task stored in the list
+     * @param tasks array of tasks
+     */
     void showList(TaskList tasks){
 
         System.out.println("Here are the tasks in your list:");
@@ -122,6 +145,11 @@ public class Ui {
     }
 }
 
+    /**
+     * Deletes a task
+     * @param tasks task to be deleted
+     * @param lineNo line no of the task
+     */
     void deleteLine(TaskList tasks, String lineNo){
         //Level 6- Delete
         System.out.println("Noted. I've removed this task:  ");
@@ -132,22 +160,29 @@ public class Ui {
 
     }
 
+    /**
+     * Marks a task as done
+     * @param tasks task to be marked as Done
+     * @param pos pos of the tas
+     */
     void markAsDone(TaskList tasks, String pos){
         System.out.println("Nice! I've marked this task as done:");
 
         //this will change the icon to true
-        int num = Integer.parseInt(pos)-1;//arrStr[1]) - 1;
+        int num = Integer.parseInt(pos)-1;
         tasks.taskList.get(num).isDone = true;
 
         String action = tasks.taskList.get(num). getDescription();
         String check = tasks.taskList.get(num). getStatusIcon();
         System.out.println("  [" + check + "]" + action);
 
-
     }
 
-
-
+    /**
+     * Finds whether a Task is present in the taskList
+     * @param tasks taskList to be searched from
+     * @param findWord  task to be found
+     */
     void findWord(TaskList tasks, String findWord){
         Iterator<Task> itr = tasks.taskList.iterator();
         List<Task> printList = new ArrayList<>();
@@ -163,8 +198,11 @@ public class Ui {
 
     }
 
-    //helper print function
-    public static void printTaskList(List<Task> arrayList){
+    /**
+     * Helper function for printing a Task List
+     * @param arrayList taskList to be printed
+     */
+    private static void printTaskList(List<Task> arrayList){
         for(Task element: arrayList){
             System.out.println(element);
         }

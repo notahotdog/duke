@@ -2,23 +2,20 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Storage {
+class Storage {
 
-    protected String filepath;
+    private String filepath;
 
-    public Storage(String Filepath){
+    Storage(String Filepath){
         filepath = Filepath;
     }
 
-
-    //Loads data from the previous session
-
     /**
-     * Loads a previous team
-     * @return
-     * @throws IOException
+     * Loads data from a previous session
+     * @return List of Task data
+     * @throws IOException if theres no input
      */
-    public List<Task> load() throws IOException {
+    List<Task> load() throws IOException {
 
         List<Task> actionList = new ArrayList<>(); //List of actions to be taken
 
@@ -32,35 +29,40 @@ public class Storage {
             String[] tokens = str1.split(delims);
 
             //tokens
-            if (tokens[0].equals("T")) {
+            switch (tokens[0]) {
+                case "T": {
 
-                //Create Tasks
-                ToDo action = new ToDo(tokens[2], actionType.T);
-                if (tokens[1].equals("true")) { //replaced from true
-                    action.isDone = true;
+                    //Create Tasks
+                    ToDo action = new ToDo(tokens[2], actionType.T);
+                    if (tokens[1].equals("true")) { //replaced from true
+                        action.isDone = true;
+                    }
+
+                    actionList.add(action);
+                    break;
                 }
 
-                actionList.add(action);
-            }
+                //Deadlines
+                case "D": {
 
-            //Deadlines
-            else if (tokens[0].equals("D")) {
-
-                Deadline action = new Deadline(tokens[2], actionType.D, tokens[3]);
-                if (tokens[1].equals("true")) {
-                    action.isDone = true;
+                    Deadline action = new Deadline(tokens[2], actionType.D, tokens[3]);
+                    if (tokens[1].equals("true")) {
+                        action.isDone = true;
+                    }
+                    actionList.add(action);
+                    break;
                 }
-                actionList.add(action);
-            }
 
-            //Events
-            else if (tokens[0].equals("E")) {
+                //Events
+                case "E": {
 
-                Event action = new Event(tokens[2], actionType.E, tokens[3]);
-                if (tokens[1].equals("true")) {
-                    action.isDone = true;
+                    Event action = new Event(tokens[2], actionType.E, tokens[3]);
+                    if (tokens[1].equals("true")) {
+                        action.isDone = true;
+                    }
+                    actionList.add(action);
+                    break;
                 }
-                actionList.add(action);
             }
         }
         br.close();
@@ -70,10 +72,12 @@ public class Storage {
 
     }
 
-
-
-    //needs to include filepath
-    public void updateStateDone(int lineNo) throws IOException {
+    /**
+     * Marks as Done inside the stored file
+     * @param lineNo the line number of the stored data to be changed
+     * @throws IOException if there's no input
+     */
+    void updateStateDone(int lineNo) throws IOException {
 
         FileReader fileReaderUpdate = new FileReader("src/data/duke.txt");
         BufferedReader bufferedReaderUpdate = new BufferedReader(fileReaderUpdate);
@@ -99,12 +103,9 @@ public class Storage {
             else{
                 line1.append(tmpStr);
             }
-
             inputBuffer.append(line1);
             inputBuffer.append('\n');
-
         }
-
         fileReaderUpdate.close();
         FileOutputStream fileOut = new FileOutputStream("src/data/duke.txt");
         fileOut.write(inputBuffer.toString().getBytes());
@@ -112,8 +113,12 @@ public class Storage {
 
     }
 
-
-    public void deleteLine(int lineNo) throws IOException {
+    /**
+     * deletes the action
+     * @param lineNo the line number of the stored data to be deleted
+     * @throws IOException if theres no input
+     */
+    void deleteLine(int lineNo) throws IOException {
 
         FileReader fileReaderDelete = new FileReader("src/data/duke.txt");
         BufferedReader bufferedReaderDelete = new BufferedReader(fileReaderDelete);
@@ -128,9 +133,7 @@ public class Storage {
 
             inputBuffer.append(tmpStr);
             inputBuffer.append('\n');
-
         }
-
         fileReaderDelete.close();
         FileOutputStream fileOut = new FileOutputStream("src/data/duke.txt");
         fileOut.write(inputBuffer.toString().getBytes());
@@ -138,24 +141,28 @@ public class Storage {
 
     }
 
-
-
-    public static void newToDo(String restWord) throws IOException {
+    /**
+     *  Stores the data of the new ToDo task
+     * @param restWord description of the ToDo task
+     */
+    static void newToDo(String restWord) {
         try {
             FileWriter fileWriter = new FileWriter("src/data/duke.txt", true);
             PrintWriter printWriter = new PrintWriter(fileWriter);
             printWriter.println("T|" + false + "|" + restWord); // add this to the shit
-            //printWriter.println("T|" + action.isDone + "|" + action.description);
             printWriter.close();
             fileWriter.close();
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.out.println("exception caught");
             e.printStackTrace();
         }
-
     }
 
-    public static void newDeadline(Task addtoList){
+    /**
+     * Stores the data of the new Deadline task
+     * @param addtoList Deadline task
+     */
+    static void newDeadline(Task addtoList){
         try {
             FileWriter fileWriter = new FileWriter("src/data/duke.txt", true);
             PrintWriter printWriter = new PrintWriter(fileWriter);
@@ -167,11 +174,13 @@ public class Storage {
             e.printStackTrace();
         }
 
-
     }
 
-
-    public static void newEvent(Task addtoList){
+    /**
+     * Stores the data of the new Event task
+     * @param addtoList event task
+     */
+    static void newEvent(Task addtoList){
         try {
             FileWriter fileWriter = new FileWriter("src/data/duke.txt", true);
             PrintWriter printWriter = new PrintWriter(fileWriter);
@@ -183,11 +192,5 @@ public class Storage {
         }
 
     }
-
-
-
-
-
-
 
 }
